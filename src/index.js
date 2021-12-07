@@ -3,10 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { StoreProvider } from 'easy-peasy';
+import { store } from './store/store';
+import {useStoreRehydrated} from 'easy-peasy'
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient()
+
+const WaitForStateRehydration = ({children}) =>{
+  const isRehydrated = useStoreRehydrated()
+  return isRehydrated ? children : null;
+}
 
 ReactDOM.render(
+
   <React.StrictMode>
-    <App />
+   <QueryClientProvider client={queryClient}>
+    <StoreProvider store={store}>
+      <WaitForStateRehydration>
+        <App />
+      </WaitForStateRehydration>
+      </StoreProvider>
+     </QueryClientProvider> 
   </React.StrictMode>,
   document.getElementById('root')
 );
